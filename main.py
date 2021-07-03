@@ -18,6 +18,9 @@ signs2 = 0
 memory = 0
 memory2 = 0
 answ = 0
+step = 0
+symbol = [0, 0]
+
 
 uifile_0 = os.path.join("ui","main_window.ui");
 
@@ -51,12 +54,14 @@ class Start(CssMainWindow, form_0):
         for n in range(0, 10):
             getattr(self, 'btn%s' % n).pressed.connect(lambda v=n: self.on_click(v))
         
+
         self.btn_clear.pressed.connect(self.clear)
-        self.btn_plus.pressed.connect(self.plus)
-        self.btn_minus.pressed.connect(self.minus)
-        self.btn_div.pressed.connect(self.div)
-        self.btn_mult.pressed.connect(self.mult)
-        self.btn_eq.pressed.connect(self.eq)
+        
+        self.btn_plus.pressed.connect(lambda: self.operation(self.btn_plus.text()))
+        self.btn_minus.pressed.connect(lambda: self.operation(self.btn_minus.text()))
+        self.btn_div.pressed.connect(lambda: self.operation(self.btn_div.text()))
+        self.btn_mult.pressed.connect(lambda: self.operation(self.btn_mult.text()))   
+        self.btn_eq.pressed.connect(lambda: self.operation(self.btn_eq.text()))
         
         #test
         print('init completed');
@@ -73,29 +78,23 @@ class Start(CssMainWindow, form_0):
             memory = v
             self.display(memory)
         print(signs)   
-    
-    def plus(self):
-        global answ
+ 
+#тут хуйня считается
+    def operation(self,text):
+        global memory, answ
         e = Engine()
-        answ = e.compute(memory,self.btn_plus.text())
+        if text == '+' or '-' or 'x' or '/':
+            first_mem = memory
+            memory = 0
+            self.display(memory)
+            a_sign = text
+            #print(answ)
+        if text == '=':
+            second_mem = memory
+            answ = e.compute(first_mem, second_mem, '+')
+            self.display(answ)
+        print(text)
         
-    def minus(self):
-        global answ
-        e = Engine()
-        answ = e.compute(memory,self.btn_minus.text())
-        
-    def div(self):
-        global answ
-        e = Engine()
-        answ = e.compute(memory,self.btn_div.text())
-        
-    def mult(self):
-        global answ
-        e = Engine()
-        answ = e.compute(memory,self.btn_mult.text())
-    
-    def eq(self):
-        self.display(answ)
     
     def clear(self):
         global signs, memory
