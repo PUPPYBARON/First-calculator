@@ -11,10 +11,13 @@ from PyQt5 import uic #, QtGui,QtCore
 import os, subprocess, platform #16.04.21 added subprocess and platform
 #import numpy as np
 import pickle
+from Engine import Engine
 
-
-signs=0
+signs = 0
+signs2 = 0
 memory = 0
+memory2 = 0
+answ = 0
 
 uifile_0 = os.path.join("ui","main_window.ui");
 
@@ -41,20 +44,24 @@ class Start(CssMainWindow, form_0):
         self.setupUi(self)
         self.css=css_filepath;
         self.lcdNumber.value()
+        global answ
+        #e = Engine()
         #window properties of the main class
-
    #Разберитесь с 47 и 48 строками     
         for n in range(0, 10):
             getattr(self, 'btn%s' % n).pressed.connect(lambda v=n: self.on_click(v))
         
         self.btn_clear.pressed.connect(self.clear)
+        self.btn_plus.pressed.connect(self.plus)
+        self.btn_minus.pressed.connect(self.minus)
+        self.btn_div.pressed.connect(self.div)
+        self.btn_mult.pressed.connect(self.mult)
+        self.btn_eq.pressed.connect(self.eq)
         
         #test
         print('init completed');
 
-
-    def connectMonitor(self):
-        pass;
+    
     
     def on_click(self,v):
         global signs, memory
@@ -67,6 +74,29 @@ class Start(CssMainWindow, form_0):
             self.display(memory)
         print(signs)   
     
+    def plus(self):
+        global answ
+        e = Engine()
+        answ = e.compute(memory,self.btn_plus.text())
+        
+    def minus(self):
+        global answ
+        e = Engine()
+        answ = e.compute(memory,self.btn_minus.text())
+        
+    def div(self):
+        global answ
+        e = Engine()
+        answ = e.compute(memory,self.btn_div.text())
+        
+    def mult(self):
+        global answ
+        e = Engine()
+        answ = e.compute(memory,self.btn_mult.text())
+    
+    def eq(self):
+        self.display(answ)
+    
     def clear(self):
         global signs, memory
         signs = 0
@@ -74,6 +104,7 @@ class Start(CssMainWindow, form_0):
         print(memory);print(signs)
         self.display(memory)
         
+    
     def display(self, memory):
         self.lcdNumber.display(memory)
 
@@ -85,7 +116,6 @@ class Monitor():
 
 
 if __name__ == '__main__':
-    pass;
     app = QApplication(sys.argv)
     ex = Start(css_filepath)
     ex.show()
