@@ -46,27 +46,18 @@ class Start(CssMainWindow, form_0):
         super().__init__(css_filepath);
         self.setupUi(self)
         self.css=css_filepath;
-        self.lcdNumber.value()
-        global answ
-        #e = Engine()
-        #window properties of the main class
-   #Разберитесь с 47 и 48 строками     
+        print('init completed'); #test
+        #window properties of the main classи     
         for n in range(0, 10):
             getattr(self, 'btn%s' % n).pressed.connect(lambda v=n: self.on_click(v))
-        
-
-        self.btn_clear.pressed.connect(self.clear)
         
         self.btn_plus.pressed.connect(lambda: self.operation(self.btn_plus.text()))
         self.btn_minus.pressed.connect(lambda: self.operation(self.btn_minus.text()))
         self.btn_div.pressed.connect(lambda: self.operation(self.btn_div.text()))
         self.btn_mult.pressed.connect(lambda: self.operation(self.btn_mult.text()))   
-        self.btn_eq.pressed.connect(lambda: self.operation(self.btn_eq.text()))
+        self.btn_eq.pressed.connect(self.equal)
+        self.btn_clear.pressed.connect(self.clear)
         
-        #test
-        print('init completed');
-
-    
     
     def on_click(self,v):
         global signs, memory
@@ -79,23 +70,21 @@ class Start(CssMainWindow, form_0):
             self.display(memory)
         print(signs)   
  
-#тут хуйня считается
     def operation(self,text):
-        global memory, answ
-        e = Engine()
-        if text == '+' or '-' or 'x' or '/':
-            first_mem = memory
-            memory = 0
-            self.display(memory)
-            a_sign = text
-            #print(answ)
-        if text == '=':
-            second_mem = memory
-            answ = e.compute(first_mem, second_mem, '+')
-            self.display(answ)
+        global memory, first_mem, a_sign
+        first_mem = memory
+        memory = 0
+        self.display(memory)
+        a_sign = text
         print(text)
         
-    
+    def equal(self):
+        global first_mem, memory, sign, a_sign
+        e = Engine()
+        answ = e.compute(first_mem, memory, a_sign)
+        self.display(answ)
+        memory = answ
+        sign = 0
     def clear(self):
         global signs, memory
         signs = 0
