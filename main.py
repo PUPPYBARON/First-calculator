@@ -12,6 +12,10 @@ import os, subprocess, platform #16.04.21 added subprocess and platform
 #import numpy as np
 import pickle
 
+
+signs=0
+memory = 0
+
 uifile_0 = os.path.join("ui","main_window.ui");
 
 css_filepath = os.path.join("ui","css","css.css")
@@ -31,17 +35,53 @@ class CssMainWindow(QMainWindow):
         self.output_dictionary={};
 
 
-class Start(CssMainWindow, form_0):
+class Start(CssMainWindow, form_0):    
     def __init__(self,css_filepath):
         super().__init__(css_filepath);
         self.setupUi(self)
         self.css=css_filepath;
+        self.lcdNumber.value()
         #window properties of the main class
-        self.inputWin=[];
-        self.outputWin=[];
 
+   #Разберитесь с 47 и 48 строками     
+        for n in range(0, 10):
+            getattr(self, 'btn%s' % n).pressed.connect(lambda v=n: self.on_click(v))
+        
+        self.btn_clear.pressed.connect(self.clear)
+        
         #test
         print('init completed');
+
+
+    def connectMonitor(self):
+        pass;
+    
+    def on_click(self,v):
+        global signs, memory
+        signs+=1
+        if signs > 1:
+            memory = memory*10+v
+            self.display(memory)
+        else:
+            memory = v
+            self.display(memory)
+        print(signs)   
+    
+    def clear(self):
+        global signs, memory
+        signs = 0
+        memory = 0
+        print(memory);print(signs)
+        self.display(memory)
+        
+    def display(self, memory):
+        self.lcdNumber.display(memory)
+
+
+class Monitor():
+    def __init__(self,value):
+        self.lcdNumber.display(value)
+
 
 
 if __name__ == '__main__':
