@@ -23,10 +23,12 @@ symbol = [0, 0]
 
 
 uifile_0 = os.path.join("ui","main_window.ui");
+uifile_1 = os.path.join("ui","about.ui");
 
 css_filepath = os.path.join("ui","css","css.css")
 
 form_0, base_0 = uic.loadUiType(uifile_0)
+form_1, base_1 = uic.loadUiType(uifile_1)
 
 
 class CssMainWindow(QMainWindow):
@@ -57,8 +59,13 @@ class Start(CssMainWindow, form_0):
         self.btn_mult.pressed.connect(lambda: self.operation(self.btn_mult.text()))   
         self.btn_eq.pressed.connect(self.equal)
         self.btn_clear.pressed.connect(self.clear)
+        self.btn_about.pressed.connect(self.openAboutWindow)
         
-    
+        
+    def openAboutWindow(self):
+        self.AboutWin = AboutWin(self.css);
+        self.AboutWin.show();
+        
     def on_click(self,v):
         global signs, memory
         signs+=1
@@ -96,6 +103,16 @@ class Start(CssMainWindow, form_0):
     def display(self, memory):
         self.lcdNumber.display(memory)
 
+
+class AboutWin(CssMainWindow, form_1):
+    def __init__(self,css_filepath):
+        super().__init__(css_filepath);
+        self.setupUi(self)
+        self.about_btn_ok.clicked.connect(self.back_start)
+        print('init completed');
+    
+    def back_start(self):
+        self.hide()
 
 class Monitor():
     def __init__(self,value):
